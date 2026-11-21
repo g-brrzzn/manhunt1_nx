@@ -97,6 +97,15 @@ if(NINTENDO_SWITCH)
     # MANHUNT_TRANSFORM_TRACE: first invalid SetTransform source (src/transform_trace.c).
     target_link_options(manhunt PRIVATE -Wl,--wrap=sub_0028DA30)
     set_source_files_properties(${MANHUNT_RUNTIME_SOURCES} PROPERTIES COMPILE_OPTIONS "-O2;-w")
+    # MANHUNT_APU_O3: the audio emulator's voice path at -O3, which vectorises 14 loops instead of 6
+    # (the mix-bin loop and the HRTF convolution among them). No -ffast-math and -ffp-contract=off,
+    # so no float operation is reordered or fused: the output is the same bit for bit. Off by
+    # default until a console A/B (APU voice processing ms/s in [perf]). Changing it does not
+    # rebuild apu_vp.o with the Makefile generator: delete the object or use a new build folder.
+    option(MANHUNT_APU_O3 "compile the APU voice processor at -O3" OFF)
+    if(MANHUNT_APU_O3)
+        set_source_files_properties(${XR}/apu/apu_vp.c PROPERTIES COMPILE_OPTIONS "-O3;-w")
+    endif()
     find_program(MANHUNT_UAM uam HINTS "${DEVKITPRO}/tools/bin" REQUIRED)
     set(MANHUNT_ROMFS "${CMAKE_CURRENT_BINARY_DIR}/nv2a_romfs")
     dkp_add_asset_target(manhunt_romfs "${MANHUNT_ROMFS}")
