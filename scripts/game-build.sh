@@ -17,7 +17,7 @@ case "$variant" in release) bdir=host; gopt=-O1 ;; debug) bdir=host-O0; gopt=-O0
 DEVKITA64_IMAGE="${DEVKITA64_IMAGE:-devkitpro/devkita64@sha256:1fc388c3a0d34bd2045a6dadcb1020e069d5f876a187fd705de14b4440c00282}"
 
 docker run --rm --network none --hostname localhost --cpus "$CPUS" --memory 12g \
-  --user "$(id -u):$(id -g)" -e CPUS="$CPUS" -e BDIR="$bdir" -e GOPT="$gopt" -e MANHUNT_MEMBASE_LOCAL="${MANHUNT_MEMBASE_LOCAL:-1}" -e MANHUNT_GUEST_REGS="${MANHUNT_GUEST_REGS:-1}" \
+  --user "$(id -u):$(id -g)" -e CPUS="$CPUS" -e BDIR="$bdir" -e GOPT="$gopt" -e MANHUNT_MEMBASE_LOCAL="${MANHUNT_MEMBASE_LOCAL:-1}" -e MANHUNT_GUEST_REGS="${MANHUNT_GUEST_REGS:-1}" -e MANHUNT_REG_LOCALS="${MANHUNT_REG_LOCALS:-0}" \
   --mount "type=bind,src=$root,dst=/repo" \
   --mount "type=bind,src=$(realpath -e "$xbe"),dst=/xbe/default.xbe,readonly" \
   "$IMAGE" bash -c '
